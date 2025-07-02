@@ -191,6 +191,10 @@ public class TwilightForestMod {
     public static int idVehicleSpawnCubeOfAnnihilation = 19;
     public static int idVehicleSpawnSlideBlock = 20;
 
+    public static int sortingX = 7;
+    public static int sortingY = 7;
+    public static int sortingZ = 7;
+
     public static int idBiomeLake;
     public static int idBiomeTwilightForest;
     public static int idBiomeTwilightForestVariant;
@@ -1035,6 +1039,10 @@ public class TwilightForestMod {
         configFile.get("Tinker Integration", "NagaScale_ID", 44).comment = "Tinker Material ID for NagaScale.";
         Steeleaf_ID = configFile.get("Tinker Integration", "Steeleaf_ID", 45).getInt(45);
         configFile.get("Tinker Integration", "Steeleaf_ID", 45).comment = "Tinker Material ID for Steeleaf.";
+
+        sortingX = configFile.get(Configuration.CATEGORY_GENERAL, "SortingX", 7).getInt(7);
+        sortingY = configFile.get(Configuration.CATEGORY_GENERAL, "SortingY", 7).getInt(7);
+        sortingZ = configFile.get(Configuration.CATEGORY_GENERAL, "SortingZ", 7).getInt(7);
 
         // fixed values, don't even read the config
         idMobWildBoar = 177;

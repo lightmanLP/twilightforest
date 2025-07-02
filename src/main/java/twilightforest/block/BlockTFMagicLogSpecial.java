@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -12,6 +13,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -166,7 +168,7 @@ public class BlockTFMagicLogSpecial extends BlockTFMagicLog {
 
     /**
      * The tree of transformation transforms the biome in the area near it into the enchanted forest biome.
-     * 
+     *
      * TODO: also change entities
      */
     private void doTreeOfTransformationEffect(World world, int x, int y, int z, Random rand) {
@@ -247,19 +249,28 @@ public class BlockTFMagicLogSpecial extends BlockTFMagicLog {
      */
     private void doSortingTreeEffect(World world, int x, int y, int z, Random rand) {
         // find all the chests nearby
-        int XSEARCH = 16;
-        int YSEARCH = 16;
-        int ZSEARCH = 16;
+        int xsearch = TwilightForestMod.sortingX;
+        int ysearch = TwilightForestMod.sortingY;
+        int zsearch = TwilightForestMod.sortingZ;
 
         ArrayList<IInventory> chests = new ArrayList<>();
         int itemCount = 0;
 
-        for (int sx = x - XSEARCH; sx < x + XSEARCH; sx++) {
-            for (int sy = y - YSEARCH; sy < y + YSEARCH; sy++) {
-                for (int sz = z - ZSEARCH; sz < z + ZSEARCH; sz++) {
-                    if (world.getBlock(sx, sy, sz) == Blocks.chest) {
-                        IInventory thisChest = Blocks.chest.func_149951_m(world, sx, sy, sz);
+        for (int sx = x - xsearch; sx < x + xsearch; sx++) {
+            for (int sy = y - ysearch; sy < y + ysearch; sy++) {
+                for (int sz = z - zsearch; sz < z + zsearch; sz++) {
+                    Block block = world.getBlock(sx, sy, sz);
+                    IInventory thisChest = null;
+                    if (block == Blocks.chest) {
+                        thisChest = Blocks.chest.func_149951_m(world, sx, sy, sz);
+                    } else if (block instanceof BlockContainer) {
+                        TileEntity entity = world.getTileEntity(sx, sy, sz);
+                        if (entity instanceof IInventory) {
+                            thisChest = (IInventory) entity;
+                        }
+                    }
 
+                    if (thisChest != null) {
                         // make sure we haven't counted this chest
                         if (thisChest != null
                                 && !checkIfChestsContains(chests, (IInventory) world.getTileEntity(sx, sy, sz))) {
